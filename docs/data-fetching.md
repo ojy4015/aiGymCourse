@@ -104,3 +104,4 @@ export async function getAllCourses() {
 const userId = params.userId; // attacker can change this
 const data = await getUserData(userId);
 ```
+##### end of test
