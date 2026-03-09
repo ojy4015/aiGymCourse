@@ -5,7 +5,11 @@
       "mcp__neon__list_projects",
       "mcp__neon__get_database_tables",
       "mcp__neon__describe_table_schema",
-      "mcp__neon__run_sql_transaction"
+      "mcp__neon__run_sql_transaction",
+      "Bash(cd \"E:/ProOne/aiGym/aigymcourse\" && echo y | npx shadcn@latest add calendar 2>&1)",
+      "Bash(cd /e/ProOne/aiGym/aigymcourse && echo y | npx shadcn@latest add calendar 2>&1)",
+      "Bash(echo y | npx shadcn@latest add calendar 2>&1)",
+      "Bash(npx:*)"
     ]
   }
 }
