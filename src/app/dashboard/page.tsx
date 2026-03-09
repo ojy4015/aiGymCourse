@@ -1,25 +1,21 @@
-"use client";
-
-import { useState } from "react";
-import { CalendarIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { getWorkoutsByUserIdAndDate } from "@/data/workouts";
 import { formatDate } from "@/lib/format-date";
+import { DatePicker } from "./date-picker";
 
-// Placeholder workout data — replace with real data fetching later
-const MOCK_WORKOUTS = [
-  { id: 1, name: "Morning Run", duration: "45 min", type: "Cardio" },
-  { id: 2, name: "Bench Press", duration: "30 min", type: "Strength" },
-];
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string }>;
+}) {
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
 
-export default function DashboardPage() {
-  const [date, setDate] = useState<Date>(new Date());
-  const [open, setOpen] = useState(false);
+  const { date: dateParam } = await searchParams;
+  const date = dateParam ? new Date(`${dateParam}T00:00:00`) : new Date();
+
+  const workouts = await getWorkoutsByUserIdAndDate(user.id, date);
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
@@ -30,27 +26,7 @@ export default function DashboardPage() {
 
         {/* Date picker */}
         <div className="mb-8">
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="gap-2">
-                <CalendarIcon className="h-4 w-4" />
-                {formatDate(date)}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={(d) => {
-                  if (d) {
-                    setDate(d);
-                    setOpen(false);
-                  }
-                }}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
+          <DatePicker selected={date} />
         </div>
 
         {/* Workouts list */}
@@ -59,27 +35,22 @@ export default function DashboardPage() {
             Workouts — {formatDate(date)}
           </h2>
 
-          {MOCK_WORKOUTS.length === 0 ? (
+          {workouts.length === 0 ? (
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
               No workouts logged for this date.
             </p>
           ) : (
             <ul className="space-y-3">
-              {MOCK_WORKOUTS.map((workout) => (
+              {workouts.map((workout) => (
                 <li
                   key={workout.id}
                   className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-5 py-4 dark:border-zinc-800 dark:bg-zinc-900"
                 >
-                  <div>
-                    <p className="font-medium text-zinc-900 dark:text-zinc-50">
-                      {workout.name}
-                    </p>
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                      {workout.type}
-                    </p>
-                  </div>
+                  <p className="font-medium text-zinc-900 dark:text-zinc-50">
+                    {workout.name}
+                  </p>
                   <span className="text-sm text-zinc-500 dark:text-zinc-400">
-                    {workout.duration}
+                    {formatDate(workout.loggedAt)}
                   </span>
                 </li>
               ))}
