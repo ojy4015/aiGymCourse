@@ -9,7 +9,11 @@
       "Bash(cd \"E:/ProOne/aiGym/aigymcourse\" && echo y | npx shadcn@latest add calendar 2>&1)",
       "Bash(cd /e/ProOne/aiGym/aigymcourse && echo y | npx shadcn@latest add calendar 2>&1)",
       "Bash(echo y | npx shadcn@latest add calendar 2>&1)",
-      "Bash(npx:*)"
+      "Bash(npx:*)",
+      "Bash(cd:*)",
+      "Bash(git checkout:*)",
+      "Bash(git:*)",
+      "mcp__ide__executeCode"
     ]
   }
 }
